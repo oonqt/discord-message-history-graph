@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Message Visualizer</title>
+</head>
+<body>
+    <canvas id="chart"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js"></script>\
+
+    <script>
+        (async () => {
+            const dataResponse = await fetch('/data');
+            const data = await dataResponse.json();
+
+            const config = {
+                type: 'bar',
+                data: {
+                    labels: data.days,
+                    datasets: [
+                        {
+                            label: 'Message Counts',
+                            data: data.counts,
+                            backgroundColor: 'lightblue'
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            }
+    
+            const context = document.getElementById('chart').getContext('2d');
+            const chart = new Chart(context, config)
+        })();
+    </script>
+</body>
+</html>

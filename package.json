@@ -1,0 +1,12 @@
+{
+  "name": "discord-message-history-graph",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "axios-retry": "^3.1.9",
+    "express": "^4.17.1",
+    "user-agents": "^1.0.706"
+  }
+}
