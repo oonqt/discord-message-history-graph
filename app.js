@@ -49,7 +49,7 @@ const sleep = t => new Promise(r => setTimeout(r, t));
 
         await sleep(fetchDelay);
     } while (lastMessage);
-
+    
     console.log('Starting data viwer server...');
     const app = express();
 
@@ -60,7 +60,7 @@ const sleep = t => new Promise(r => setTimeout(r, t));
         },
         hourly: {
             hours: Array.from(messageHourPairs.keys()),
-            counts: Array.from(messageHourPairs.values()).map(count => count / Math.max(...Array.from(messageDayPairs.keys())))
+            counts: Array.from(messageHourPairs.values()).map(count => count / Array.from(messageDayPairs.keys()).length)
         }
     }));
     app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'visualizer.html')));
