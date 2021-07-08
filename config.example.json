@@ -2,5 +2,5 @@
     "token": "",
     "channelId": "",
     "viewerPort": 8080,
-    "fetchDelay": 500
+    "fetchDelay": 0
 }
