@@ -15,8 +15,13 @@ const sleep = t => new Promise(r => setTimeout(r, t));
     axiosRetry(axios, { retries: 5 });
 
     let messageDayPairs = new Map();
+    let messageHourPairs = new Map();
     let scrapedCount = 0;
     let lastMessage;
+
+    for (let i = 0; i < 24; i++) {
+        messageHourPairs.set(i, 0);
+    }
 
     do {
         const { data } = await axios(`https://discord.com/api/v9/channels/${channelId}/messages?limit=100${lastMessage ? `&before=${lastMessage}` : ''}`);
@@ -33,6 +38,8 @@ const sleep = t => new Promise(r => setTimeout(r, t));
             } else {
                 messageDayPairs.set(dateString, 1)
             }
+
+            messageHourPairs.set(date.getHours(), messageHourPairs.get(date.getHours()) + 1)
         }
 
         lastMessage = data[data.length - 1] ? data[data.length - 1].id : null;
@@ -46,7 +53,16 @@ const sleep = t => new Promise(r => setTimeout(r, t));
     console.log('Starting data viwer server...');
     const app = express();
 
-    app.get('/data', (_, res) => res.json({ days: Array.from(messageDayPairs.keys()), counts: Array.from(messageDayPairs.values()) }));
+    app.get('/data', (_, res) => res.json({
+        daily: {
+            days: Array.from(messageDayPairs.keys()),
+            counts: Array.from(messageDayPairs.values())
+        },
+        hourly: {
+            hours: Array.from(messageHourPairs.keys()),
+            counts: Array.from(messageHourPairs.values()).map(count => count / Math.max(...Array.from(messageDayPairs.keys())))
+        }
+    }));
     app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'visualizer.html')));
 
     app.listen(viewerPort, () => console.log(`Viewer started on: http://localhost:${viewerPort}`));

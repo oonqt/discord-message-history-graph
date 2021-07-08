@@ -7,7 +7,8 @@
     <title>Discord Message Visualizer</title>
 </head>
 <body>
-    <canvas id="chart"></canvas>
+    <canvas id="dailyChart"></canvas>
+    <canvas id="hourlyChart"></canvas>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js"></script>\
 
@@ -16,14 +17,37 @@
             const dataResponse = await fetch('/data');
             const data = await dataResponse.json();
 
-            const config = {
+            console.log(data);
+
+            const dailyConfig = {
                 type: 'bar',
                 data: {
-                    labels: data.days,
+                    labels: data.daily.days,
                     datasets: [
                         {
                             label: 'Message Counts',
-                            data: data.counts,
+                            data: data.daily.counts,
+                            backgroundColor: 'lightblue'
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            }
+
+            const hourlyConfig = {
+                type: 'bar',
+                data: {
+                    labels: data.hourly.hours,
+                    datasets: [
+                        {
+                            label: 'Average Hourly Message Counts',
+                            data: data.hourly.counts,
                             backgroundColor: 'lightblue'
                         }
                     ]
@@ -37,8 +61,11 @@
                 }
             }
     
-            const context = document.getElementById('chart').getContext('2d');
-            const chart = new Chart(context, config)
+            const dailyContext = document.getElementById('dailyChart').getContext('2d');
+            new Chart(dailyContext, dailyConfig);
+
+            const hourlyContext = document.getElementById('hourlyChart').getContext('2d');
+            new Chart(hourlyContext, hourlyConfig);
         })();
     </script>
 </body>
